@@ -1,8 +1,20 @@
 const asyncHandler= (requestHandler)=>{
-    (req,res,next) => {
+    return (req,res,next) => {
         Promise.resolve(requestHandler(req,res,next)).catch((err)=>next(err))
     }
 }
+
+// asyncHnadler is a HOF, taking a controller function as an input and returning another function 
+
+/*
+2️⃣ Returned middleware function
+(req, res, next) => { ... }
+This is:
+A valid Express middleware
+req → request
+res → response
+next → pass control or errors
+*/
 
 
 export {asyncHandler}
