@@ -1,6 +1,6 @@
 import mongoose, {Schema} from "mongoose"
 import bcrypt from "bcrypt"
-import { jwt } from "jsonwebtoken"
+import  jwt  from "jsonwebtoken"
 const userSchema=new Schema(
     {
         username:{
@@ -18,7 +18,7 @@ const userSchema=new Schema(
             lowercase: true,
             trim: true,
         },
-        fullname: {
+        fullName: {
             type: String,
             required:true,
             trim: true,
@@ -46,14 +46,14 @@ const userSchema=new Schema(
         }
         
     },{
-        timeseries:true
+        timestamps:true
     }
 )
 
-userSchema.pre("save",async function (next) { //pre hook or middleware
+userSchema.pre("save",async function () { //pre hook or middleware
     if(!this.isModified("password"))  return next()
     this.password=await bcrypt.hash(this.password,10)
-    next() // tells mongoose I'm done , continue saving
+    // next() // tells mongoose I'm done , continue saving
 })
 
 // for password verification

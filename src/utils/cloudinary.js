@@ -1,10 +1,13 @@
+import dotenv from "dotenv"
+dotenv.config({path: './.env'})  // created big problems , this file is loading before index.js and this solved the problem
+
 import {v2 as cloudinary} from "cloudinary"
 import fs from "fs" // file system : read,write (build in)
 
 cloudinary.config({ 
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
         api_key: process.env.CLOUDINARY_API_KEY, 
-        api_secret: process.env.CLOUDINARY_API_SECRET 
+        api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 
@@ -18,14 +21,23 @@ const uploadOnCloudinary= async (localFilePath)=>{
             resource_type:"auto"
         }) // returns a resolved value
         //file has been uploaded successfully
-        console.log("file is uploaded on cloudinary",response.url)
+        console.log("file is uploaded on cloudinary",response.url)// 
+        if (fs.existsSync(localFilePath)) {
+            await fs.promises.unlink(localFilePath)
+            // console.log("Local file deleted")
+        }
         return response 
 
     }catch(error){
-        fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the upload operation got failed
-        return null;
+    console.log("Cloudinary upload failed:", error)
+
+    if(fs.existsSync(localFilePath)){
+        fs.unlinkSync(localFilePath)// remove the locally saved temporary file as the upload operation got failed
     }
+    return null;
+} 
 }
+
 
 /*
 await key word unwraps the promise 
